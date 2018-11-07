@@ -114,15 +114,17 @@
 				
 				//Czy istnieje już użytkownik przypisany do danego nicku?
 				$rezultat = $polaczenie->query("SELECT email from uzytkownicy WHERE nick='$uzytkownik'");
-
 				if (!$rezultat) throw new Exception($polaczenie->error);
 				
-				$ile_takich_maili = $rezultat->num_rows;
-				if($ile_takich_maili>0)
+				$wiersz = $rezultat->fetch_assoc();
+
+				$czy_istnieje_juz_konto=$wiersz['email'];
+
+				if($czy_istnieje_juz_konto!=null)
 				{
 					$wszystko_OK=false;
 					$_SESSION['e_email']="Ten użytkownik posiada już konto!";
-				}		
+				}	
 
 				if ($wszystko_OK==true)
 				{

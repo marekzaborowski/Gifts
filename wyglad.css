@@ -1,0 +1,48 @@
+body
+{
+    background-color: yellow;
+}
+#czat_z_mikolajem
+{
+    float: left;
+    width: 500px;   
+    min-height: 500px;
+    text-align: center;
+}
+#czat_z_dzieckiem
+{
+    float: left;
+    width: 498px;
+    min-height: 500px;
+    border-right: 2px dotted black;
+    text-align: center;
+}
+#form
+{
+    width: 1000px;
+    margin: auto;
+    margin-top: 20px;
+    
+}
+#czat
+{
+    background-color: gray;
+    margin-right: 10px;
+    margin-top: 10px;
+    min-height: 500px;
+}
+#czat2
+{
+    background-color: gray;
+    margin-left: 10px;
+    margin-top: 10px;
+    min-height: 500px;
+}
+#ja
+{
+    background-color: red;
+}
+#on
+{
+    background-color: blue;
+}
