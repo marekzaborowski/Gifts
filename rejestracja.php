@@ -41,6 +41,7 @@
 		{
 			$wszystko_OK=false;
 			$_SESSION['e_uzytkownik']="Zaznacz kim jesteś!";
+			//$uzytkownik=0;
 		}
 		else
 		$uzytkownik = $_POST['uzytkownik'];
@@ -53,19 +54,6 @@
 		{
 			$wszystko_OK=false;
 			$_SESSION['e_kod']="Podaj kod dostępu!";
-		}
-
-		//Bot or not? Oto jest pytanie!
-		$sekret = "6LeXKHQUAAAAAPGO0vjOKt9jh86ymW4JqYuJDOYQ";
-		
-		$sprawdz = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret='.$sekret.'&response='.$_POST['g-recaptcha-response']);
-		
-		$odpowiedz = json_decode($sprawdz);
-		
-		if ($odpowiedz->success==false)
-		{
-			$wszystko_OK=false;
-			$_SESSION['e_bot']="Potwierdź, że nie jesteś botem!";
 		}		
 		
 		//Zapamiętaj wprowadzone dane
@@ -152,9 +140,7 @@
 			echo '<br />Informacja developerska: '.$e;
 		}
 		
-	}
-	
-	
+	}	
 ?>
 
 <!DOCTYPE HTML>
@@ -163,7 +149,12 @@
 	<meta charset="utf-8" />
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 	<title>prezenty - rejestracja</title>
-	<script src='https://www.google.com/recaptcha/api.js'></script>
+	<?php
+        header("Cache-Control: no-cache, no-store, must-revalidate"); // HTTP 1.1.
+        header("Pragma: no-cache"); // HTTP 1.0.
+        header("Expires: 0"); // Proxies.
+    ?>
+	<link rel="stylesheet" type="text/css" href="wyglad.css">
 	
 	<style>
 		.error
@@ -176,10 +167,10 @@
 </head>
 
 <body>
-	
-	<form method="post">
+	<div id="registration">
+	<form method="post" >
 
-		E-mail: <br /> <input type="text" value="<?php
+		E-mail: <br /> <input type="text" style="width: 400px; height: 25px; font-size: 25px;" value="<?php
 			if (isset($_SESSION['fr_email']))
 			{
 				echo $_SESSION['fr_email'];
@@ -195,7 +186,7 @@
 			}
 		?>
 		
-		Twoje hasło: <br /> <input type="password"  value="<?php
+		Twoje hasło: <br /> <input type="password" style="width: 400px; height: 25px; font-size: 25px;" value="<?php
 			if (isset($_SESSION['fr_haslo1']))
 			{
 				echo $_SESSION['fr_haslo1'];
@@ -211,7 +202,7 @@
 			}
 		?>		
 		
-		Powtórz hasło: <br /> <input type="password" value="<?php
+		Powtórz hasło: <br /> <input type="password" style="width: 400px; height: 25px; font-size: 25px;" value="<?php
 			if (isset($_SESSION['fr_haslo2']))
 			{
 				echo $_SESSION['fr_haslo2'];
@@ -220,11 +211,11 @@
 		?>" name="haslo2" /><br />
 
 		Zaznacz kim jesteś: <br> 
-		<input type="radio" name="uzytkownik" value="Mama&Tata"/>MAMA&TATA<br>
-		<input type="radio" name="uzytkownik" value="Liza&Grzegorz"/>LIZA&GRZEGORZ<br>
-		<input type="radio" name="uzytkownik" value="Dorota&Adam"/>DOROTA&ADAM<br>
-		<input type="radio" name="uzytkownik" value="Ola&Michał"/>OLA&MICHAŁ<br>
-		<input type="radio" name="uzytkownik" value="Marek"/>MAREK<br>
+		<input type="radio" name="uzytkownik" style="width: 20px; height: 20px;" value="Mama&Tata"/>MAMA&TATA<br>
+		<input type="radio" name="uzytkownik" style="width: 20px; height: 20px;" value="Liza&Grzegorz"/>LIZA&GRZEGORZ<br>
+		<input type="radio" name="uzytkownik" style="width: 20px; height: 20px;" value="Dorota&Adam"/>DOROTA&ADAM<br>
+		<input type="radio" name="uzytkownik" style="width: 20px; height: 20px;" value="Ola&Michal"/>OLA&MICHAŁ<br>
+		<input type="radio" name="uzytkownik" style="width: 20px; height: 20px;" value="Marek"/>MAREK<br><br>
 
 		<?php
 			if (isset($_SESSION['e_uzytkownik']))
@@ -235,7 +226,7 @@
 		?>
 
 		Kod dostępu:<br>
-		<input type="text" name="kod"/><br>
+		<input type="text" style="width: 400px; height: 25px; font-size: 25px;" name="kod"/><br>
 
 		<?php
 			if (isset($_SESSION['e_kod']))
@@ -244,22 +235,10 @@
 				unset($_SESSION['e_kod']);
 			}
 		?>
+		<br>
 		
-		<div class="g-recaptcha" data-sitekey="6LeXKHQUAAAAAOui24j0Ix2STymw77YyshMziJSb"></div>
-		
-		<?php
-			if (isset($_SESSION['e_bot']))
-			{
-				echo '<div class="error">'.$_SESSION['e_bot'].'</div>';
-				unset($_SESSION['e_bot']);
-			}
-		?>	
-		
-		<br />
-		
-		<input type="submit" value="Zarejestruj się" />
-		
+		<input type="submit" style="width: 300px; height: 100px; font-size: 40px;" value="Zarejestruj się" />
 	</form>
-
+	</div>
 </body>
 </html>

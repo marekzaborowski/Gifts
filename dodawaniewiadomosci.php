@@ -12,27 +12,20 @@
     require_once "connect.php";
     $polaczenie = @new mysqli($host, $db_user, $db_password, $db_name);
     
-    if(isset($_POST['wiadomosc']))
+    if(isset($_POST['wiadomosc_do_dziecka']))
     {
-        $wiadomosc=$_POST['wiadomosc'];
-        unset($_POST['wiadomosc']);
-        if (!@$polaczenie->query("INSERT INTO wiadomosci VALUES (NULL,'".$_SESSION['idpolaczenia_dlamikolaja']."','".$wiadomosc."','".$_SESSION['id']."')"))
+        if (!@$polaczenie->query("INSERT INTO wiadomosci VALUES (NULL,'".$_SESSION['idpolaczenia_dlamikolaja']."','".$_POST['wiadomosc_do_dziecka']."','".$_SESSION['id']."')"))
         {
             echo "Error: ".$polaczenie->error;
         }
         header('Location: chat.php');
     }
-    else
+    else//if(isset($_POST['wiadomosc_do_mikolaja']))
     {
-        if(isset($_POST['wiadomosc2']))
+        if (!@$polaczenie->query("INSERT INTO wiadomosci VALUES (NULL,'".$_SESSION['idpolaczenia_dladziecka']."','".$_POST['wiadomosc_do_mikolaja']."','".$_SESSION['id']."')"))
         {
-            $wiadomosc2=$_POST['wiadomosc2'];
-            unset($_POST['wiadomosc2']);
-            if (!@$polaczenie->query("INSERT INTO wiadomosci VALUES (NULL,'".$_SESSION['idpolaczenia_dladziecka']."','".$wiadomosc2."','".$_SESSION['id']."')"))
-            {
-                echo "Error: ".$polaczenie->error;
-            }
-            header('Location: chat.php');
+            echo "Error: ".$polaczenie->error;
         }
+        header('Location: chat.php');
     }
 ?>

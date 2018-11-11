@@ -7,10 +7,6 @@
 		header('Location: index.php');
 		exit();
 	}
-	else
-	{
-		unset($_SESSION['udanarejestracja']);
-	}
 	
 	//Usuwanie zmiennych pamiętających wartości wpisane do formularza
 	if (isset($_SESSION['fr_nick'])) unset($_SESSION['fr_nick']);
@@ -33,13 +29,23 @@
 	<meta charset="utf-8" />
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 	<title>prezenty</title>
+	<?php
+        header("Cache-Control: no-cache, no-store, must-revalidate"); // HTTP 1.1.
+        header("Pragma: no-cache"); // HTTP 1.0.
+        header("Expires: 0"); // Proxies.
+    ?>
+	<link rel="stylesheet" type="text/css" href="wyglad.css">
 </head>
 
 <body>
+	<div style="text-align: center">
+		<h1>Rejestracja przebiegła pomyślnie! Przejdź z powrotem do strony głównej, 
+		żeby zalogować się na swoje konto klikając poniższy link.</h1>
+		<a style="font-size: 40px" href="index.php">Zaloguj się na swoje konto!</a>
+	</div>
 	
-	Rejsestracja przebiegła pomyślnie! Możesz już zalogować się na swoje konto!<br /><br />
 	
-	<a href="index.php">Zaloguj się na swoje konto!</a>
+	
 	<br /><br />
 
 </body>

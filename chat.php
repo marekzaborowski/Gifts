@@ -1,4 +1,5 @@
 <?php
+    include 'wypisywanie_wiadomosci.php';
 
 	session_start();
 	
@@ -8,11 +9,41 @@
         echo "blad";
 		exit();
     }
+    if($_SESSION['czy_wszyscy_losowali']==false)
+    {
+        header('Location: waiting_room.php');
+        exit();
+    }
 
     require_once "connect.php";
     $polaczenie = @new mysqli($host, $db_user, $db_password, $db_name);
-
-    if ($rezultat = @$polaczenie->query("SELECT prezent, nadawca FROM wiadomosci WHERE idpolaczenia ='".$_SESSION['idpolaczenia_dlamikolaja']."'"))
+    //Tworzę tablicę z wiadomościami i informacjami o nadawcy w czasie gdzie zalogowany użytkownik jest mikołajem
+    if ($rezultat = @$polaczenie->query("SELECT id, prezent, idnadawcy FROM wiadomosci 
+        WHERE idpolaczenia ='".$_SESSION['idpolaczenia_dlamikolaja']."'"))
+	{
+        $i=0;
+        $w;
+        $wartosc=true;
+        do
+        {
+            $w=$rezultat->fetch_assoc();
+            if($w!=null)
+            {
+                $wiadomosci_zDzieckiem[$i]=$w;
+                $i++;
+            }
+            else
+            {
+                $wartosc=false;
+            }
+        }
+        while($wartosc==true); 
+	}
+	else
+    echo "Error: ".$polaczenie->error;
+    //Tworzę tablicę z wiadomościami i informacjami o nadawcy w czasie gdzie zalogowany użytkownik jest dzieckiem
+    if ($rezultat = @$polaczenie->query("SELECT id, prezent, idnadawcy FROM wiadomosci 
+        WHERE idpolaczenia ='".$_SESSION['idpolaczenia_dladziecka']."'"))
 	{
         $i=0;
         $w;
@@ -22,7 +53,31 @@
             $w=$rezultat->fetch_assoc();
             if($w != null)
             {
-                $wiersz_dlamikolaja[$i]=$w;
+                $wiadomosci_zMikolajem[$i]=$w;
+                $i++;
+            }
+            else
+            {
+                $wartosc=false;
+            }
+        }
+        while($wartosc==true); 
+	}
+	else
+    echo "Error: ".$polaczenie->error;
+    //Tworzę tablicę z komentarzami i informacjami o nadawcy w czasie gdzie zalogowany użytkownik jest dzieckiem
+    if ($rezultat = @$polaczenie->query("SELECT * FROM komentarze"))
+	{   
+        $komentarze=NULL;
+        $i=0;
+        $w;
+        $wartosc=true;
+        do
+        {
+            $w=$rezultat->fetch_assoc();
+            if($w != null)
+            {
+                $komentarze[$i]=$w;
                 $i++;
             }
             else
@@ -35,25 +90,12 @@
 	else
     echo "Error: ".$polaczenie->error;
 
-    if ($rezultat2 = @$polaczenie->query("SELECT prezent, nadawca FROM wiadomosci WHERE idpolaczenia ='".$_SESSION['idpolaczenia_dladziecka']."'"))
-	{
-        $i=0;
-        $w;
-        $wartosc=true;
-        do
-        {
-            $w=$rezultat2->fetch_assoc();
-            if($w != null)
-            {
-                $wiersz_dladziecka[$i]=$w;
-                $i++;
-            }
-            else
-            {
-                $wartosc=false;
-            }
-        }
-        while($wartosc==true); 
+    //Wyciągam nick dziecka
+    if ($rezultat = @$polaczenie->query("SELECT nick FROM uzytkownicy, polaczenia 
+        WHERE polaczenia.iddziecka = uzytkownicy.id AND idmikolaja='".$_SESSION['idpolaczenia_dlamikolaja']."'"))
+	{   
+        $wiersz = $rezultat->fetch_assoc();
+        $nick_dziecka=$wiersz['nick'];
 	}
 	else
     echo "Error: ".$polaczenie->error;
@@ -74,37 +116,27 @@
     ?>
 </head>
 <body>
-    <div>
-        <a href="logout.php">Wyloguj</a><br>
+    <div style="text-align: justify; font-size: 19px">
+        Strona, na której się znajdujesz służy do komunikacji. Po lewej stornie jest pole do 
+        pisania z osobą, której robisz prezent, a po prawej jest pole do pisania z osobą, która prezent 
+        robi Tobie (czyli z mikołajem). Pamiętaj, żeby nie pomylić który czat jest który ponieważ wiadomości
+        nie da się cofnąć ani usunąć. Jeżeli zapomniałeś/aś komu robisz prezent, najedź myszką na czerwony napis poniżej "osobą" 
+        W celu wylogowania się kliknij napis po prawej stronie:
+        <b><a href="logout.php">Tak, to ten napis ;)</a></b><br>
     </div>
     <div id="form">
         <div id="czat_z_dzieckiem">
             <form method="post" action="dodawaniewiadomosci.php">
-                Napisz wiadomość do dziecka <input type="text" name="wiadomosc"/><br>
-                <input type="submit" type="wyslanie_wiadomosci" value="Wyślij wiadomość"/> 
+                <b>Czat z Twoją wylosowaną <span title='<?php echo $nick_dziecka; ?>' style='color: red;'>osobą</span>:</b> <br><br>
+                <input type="text" name="wiadomosc_do_dziecka"/>
+                <input type="submit" value="Wyślij wiadomość"/> 
             </form>
-            <div id="czat">
+            <div class="czat">
                 <?php
-                    if(isset($wiersz_dlamikolaja))
+                //print_r($wiadomosci_zDzieckiem);
+                    if(isset($wiadomosci_zDzieckiem))
                     {
-                        foreach($wiersz_dlamikolaja as $item) 
-                        {
-                            if($item['nadawca']==$_SESSION['id'])
-                            {
-                                echo '<div id="ja">';
-                                    echo $item['prezent'];
-                                    echo ' <input type="submit" value="Dodaj komentarz" />';
-                                echo '</div>';
-                            }
-                            else
-                            {
-                                echo '<div id="on">';
-                                    echo $item['prezent'];
-                                    echo ' <input type="submit" value="Dodaj komentarz" />';
-                                echo '</div>';
-                            } 
-                            echo "<br/>";
-                        }
+                        wypisz_wiadomosci($wiadomosci_zDzieckiem, $komentarze);
                     }
                 ?>
             </div>
@@ -112,41 +144,15 @@
 
         <div id="czat_z_mikolajem">
             <form  method="post" action="dodawaniewiadomosci.php">
-                Napisz wiadomość do mikołaja <input type="text" name="wiadomosc2"/> <br>
-                <input type="submit" name="wyslanie_wiadomosci2" value="Wyślij wiadomość"/>
+                <b>Czat z Twoim <span style='color: red;'>mikołajem</span>:</b> <br><br>
+                <input type="text" name="wiadomosc_do_mikolaja"/> 
+                <input type="submit" value="Wyślij wiadomość"/>
             </form>
-            <div id="czat2" >
+            <div class="czat" >
                 <?php
-                    if(isset($wiersz_dladziecka))
+                    if(isset($wiadomosci_zMikolajem))
                     {
-                        foreach($wiersz_dladziecka as $_SESSION['item']) 
-                        {
-                            if($_SESSION['item']['nadawca']==$_SESSION['id'])
-                            {
-                                echo '<div id="ja">';
-                                    echo '<form method="post" >';
-                                        echo $_SESSION['item']['prezent'];
-                                        echo ' <input type="submit" name="moj_komentarz" value="Dodaj komentarz" />';
-                                        echo ' <input type="hidden" name="numer_indeksu"';
-                                       // $zmienna = $_SESSION['item']['prezent'].key;
-                                    echo '<form>';
-                                    if(isset($_POST['moj_komentarz']))
-                                    {
-                                        echo "<div style='background-color: white'>";
-                                            //echo "$zmienna";
-                                        echo "</div>";
-                                    }
-                                echo '</div>';
-                            }
-                            else
-                            {
-                                echo '<div id="on">';
-                                    echo $item['prezent'];
-                                    echo ' <input type="submit" value="Dodaj komentarz" />';
-                                echo '</div>';
-                            } 
-                            echo "<br/>";
-                        }
+                        wypisz_wiadomosci($wiadomosci_zMikolajem, $komentarze);
                     }
                 ?>
             </div>
