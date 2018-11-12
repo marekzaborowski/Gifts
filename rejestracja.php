@@ -41,7 +41,7 @@
 		{
 			$wszystko_OK=false;
 			$_SESSION['e_uzytkownik']="Zaznacz kim jesteś!";
-			//$uzytkownik=0;
+			$uzytkownik=0;
 		}
 		else
 		$uzytkownik = $_POST['uzytkownik'];

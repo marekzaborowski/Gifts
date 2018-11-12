@@ -114,6 +114,7 @@
         header("Pragma: no-cache"); // HTTP 1.0.
         header("Expires: 0"); // Proxies.
     ?>
+    <meta http-equiv="refresh" content="60" >
 </head>
 <body>
     <div style="text-align: justify; font-size: 19px">
