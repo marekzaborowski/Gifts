@@ -32,7 +32,6 @@
                 echo '</form>';
                 if(isset($komentarze))
                 {
-                    //print_r($komentarze);
                     wypisz_komentarze($komentarze, $id_wiadomosci);
                 }
                 
@@ -60,22 +59,14 @@
                     echo '<div class="'.$id_stylu.'">';
                     echo "<div class='wrap' style=\"font-size: 15px\"> <b>Ja: </b>";
                         echo $komentarz['komentarz_do_prezentu']."</div>";
-                        //echo $komentarz['idnadawcy'];
-                        //echo $id_stylu;
-                        //echo '<br/>';
                     echo '</div>';
-                    // echo "<br/>";
                 }
                 else
                 {
                     echo '<div class="'.$id_stylu.'">';
                         echo "<div class='wrap' style=\"font-size: 15px\"> <b>Rozmówca: </b>";
                         echo $komentarz['komentarz_do_prezentu']."</div>";
-                        //echo $komentarz['idnadawcy'];
-                        //echo $id_stylu;
-                        //echo '<br/>';
                     echo '</div>';
-                    // echo "<br/>"; 
                 }
             }
         }
@@ -93,4 +84,3 @@
         }
     }
 ?>
-

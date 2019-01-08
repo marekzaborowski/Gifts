@@ -17,6 +17,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 	<title>prezenty</title>
 	<?php
+	//zapis konieczny do poprawnego wyświetlania się styli
         header("Cache-Control: no-cache, no-store, must-revalidate"); // HTTP 1.1.
         header("Pragma: no-cache"); // HTTP 1.0.
         header("Expires: 0"); // Proxies.
@@ -25,7 +26,6 @@
 </head>
 
 <body>
-	
 	<div id="index">
 		<div id="logo">
 			<h1>Witajcie na stronie <br/> Prezenty 2.0</h1>

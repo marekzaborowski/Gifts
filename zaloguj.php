@@ -1,5 +1,4 @@
 <?php
-
 	session_start();
 	
 	if ((!isset($_POST['email'])) || (!isset($_POST['haslo'])))
@@ -18,19 +17,6 @@
 	}
 	else
 	{
-		/*if ($rezultat = @$polaczenie->query("SELECT * FROM polaczenia WHERE idmikolaja='".$_SESSION['id']."'"))
-		{
-			$wiersz = $rezultat->fetch_assoc();
-			$_SESSION['idmikolaja']=$wiersz['idmikolaja'];
-			if($_SESSION['idmikolaja']==null)
-			{
-				header('Location: chat.php');
-				$polaczenie->close();
-			}
-		}
-		else
-		echo "Error: ".$polaczenie->error;*/
-
 		$email = $_POST['email'];
 		$haslo = $_POST['haslo'];
 	
@@ -49,7 +35,6 @@
 					$_SESSION['nick'] = $wiersz['nick'];
 					$_SESSION['id'] = $wiersz['id'];
 					$_SESSION['email'] = $wiersz['email'];
-					//echo '<pre>'; print_r($_SESSION); echo '</pre>';
 					unset($_SESSION['blad']);
 					$rezultat->free_result();
 					header('Location: draw.php');
@@ -59,18 +44,15 @@
 					$_SESSION['blad'] = '<span style="color:red">Nieprawidłowy email lub hasło!</span>';
 					header('Location: index.php');
 				}
-				
-			} else {
-				
+			} 
+			else 
+			{
 				$_SESSION['blad'] = '<span style="color:red">Nieprawidłowy email lub hasło!</span>';
 				header('Location: index.php');
 			}
-			
 		}
 		else
 		echo "Error: ".$polaczenie->error;
-		
 		$polaczenie->close();
 	}
-	
 ?>

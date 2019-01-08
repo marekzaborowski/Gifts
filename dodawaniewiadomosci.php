@@ -20,7 +20,7 @@
         }
         header('Location: chat.php');
     }
-    else//if(isset($_POST['wiadomosc_do_mikolaja']))
+    else
     {
         if (!@$polaczenie->query("INSERT INTO wiadomosci VALUES (NULL,'".$_SESSION['idpolaczenia_dladziecka']."','".$_POST['wiadomosc_do_mikolaja']."','".$_SESSION['id']."')"))
         {

@@ -103,97 +103,97 @@
 	<link rel="stylesheet" type="text/css" href="wyglad.css">
 </head>
 <body>
-<?php
-	echo "<h2><p>Witaj ".$_SESSION['nick'].'! [ <a href="logout.php">Wyloguj się!</a> ]</p></h2> <br>';
-	//Sprawdzam czy użytkownik wcisnął przycisk "LOSUJ"
-	if(!isset($_POST['losowanie']))
-	{
-		echo "<div id=\"losowanie\" >Losuj, komu będziesz robił prezent w tym roku:<br><br>"; 
-		
-		echo '<form method="post">';
-			echo '<input style="width: 250px; height: 75px; font-size: 40px;" type="submit" value="LOSUJ">' ;
-			echo '<input type="hidden" value="wylosuj" name="losowanie" >' ;
-		echo '</form></div>';
-	}//Sprawdzam który przycisk jest aktywny 
-	elseif($_POST['losowanie']=="wylosuj")
-	{	
-		$liczba=0;
-		if(isset($wyjatek_losowania))//jeżeli zachodzi wyjatek to z automatu przypisujemy użytkownika bez polosowania 
+	<?php
+		echo "<h2><p>Witaj ".$_SESSION['nick'].'! [ <a href="logout.php">Wyloguj się!</a> ]</p></h2> <br>';
+		//Sprawdzam czy użytkownik wcisnął przycisk "LOSUJ"
+		if(!isset($_POST['losowanie']))
 		{
-			$liczba = $wyjatek_losowania;
-		}
-		else//jezeli wyjatek nie zachodzi przechodze do procedury losowania użytkownika
-		{
-			do
+			echo "<div id=\"losowanie\" >Losuj, komu będziesz robił prezent w tym roku:<br><br>"; 
+			
+			echo '<form method="post">';
+				echo '<input style="width: 250px; height: 75px; font-size: 40px;" type="submit" value="LOSUJ">' ;
+				echo '<input type="hidden" value="wylosuj" name="losowanie" >' ;
+			echo '</form></div>';
+		}//Sprawdzam który przycisk jest aktywny 
+		elseif($_POST['losowanie']=="wylosuj")
+		{	
+			$liczba=0;
+			if(isset($wyjatek_losowania))//jeżeli zachodzi wyjatek to z automatu przypisujemy użytkownika bez polosowania 
 			{
-				$liczba=rand(1,5);
-				$poprawna=true;
-	
-				if ($rezultat = @$polaczenie->query("SELECT status FROM uzytkownicy where id='$liczba'"))
+				$liczba = $wyjatek_losowania;
+			}
+			else//jezeli wyjatek nie zachodzi przechodze do procedury losowania użytkownika
+			{
+				do
+				{
+					$liczba=rand(1,5);
+					$poprawna=true;
+		
+					if ($rezultat = @$polaczenie->query("SELECT status FROM uzytkownicy where id='$liczba'"))
+					{
+						$wiersz = $rezultat->fetch_assoc();
+						$status = $wiersz['status'];
+					}
+					else
+					echo "Error: ".$polaczenie->error;
+		
+					if($liczba==$_SESSION['id'] || $status==true)
+					{
+						$poprawna=false;
+					}
+				}
+				while($poprawna != true);
+			}
+			//procedura tworzenia połączenia mikołaja z dzieckiem i vice versa
+			if ($rezultat = @$polaczenie->query("SELECT nick FROM uzytkownicy WHERE id='$liczba'"))
+			{
+				$ile = $rezultat->num_rows;
+				if($ile>0)
 				{
 					$wiersz = $rezultat->fetch_assoc();
-					$status = $wiersz['status'];
-				}
-				else
-				echo "Error: ".$polaczenie->error;
-	
-				if($liczba==$_SESSION['id'] || $status==true)
-				{
-					$poprawna=false;
-				}
-			}
-			while($poprawna != true);
-		}
-		//procedura tworzenia połączenia mikołaja z dzieckiem i vice versa
-		if ($rezultat = @$polaczenie->query("SELECT nick FROM uzytkownicy WHERE id='$liczba'"))
-		{
-			$ile = $rezultat->num_rows;
-			if($ile>0)
-			{
-				$wiersz = $rezultat->fetch_assoc();
-				$nazwadziecka = $wiersz['nick'];
-				echo '<div id="wylosowane">';
-				echo 'W tym roku robisz prezent:<br>';
-				echo "<b>".$nazwadziecka."</b><br>";
+					$nazwadziecka = $wiersz['nick'];
+					echo '<div id="wylosowane">';
+					echo 'W tym roku robisz prezent:<br>';
+					echo "<b>".$nazwadziecka."</b><br>";
 
-				if (!@$polaczenie->query("UPDATE polaczenia SET iddziecka='$liczba' WHERE idmikolaja='".$_SESSION['id']."'"))
-				{
-					echo "Error: ".$polaczenie->error;
+					if (!@$polaczenie->query("UPDATE polaczenia SET iddziecka='$liczba' WHERE idmikolaja='".$_SESSION['id']."'"))
+					{
+						echo "Error: ".$polaczenie->error;
+					}
+					if (!@$polaczenie->query("UPDATE uzytkownicy SET status=true WHERE id='$liczba'"))
+					{
+						echo "Error: ".$polaczenie->error;
+					}
 				}
-				if (!@$polaczenie->query("UPDATE uzytkownicy SET status=true WHERE id='$liczba'"))
+				else 
 				{
-					echo "Error: ".$polaczenie->error;
+					echo "blad";
 				}
 			}
-			else 
+			else
+			echo "Error: ".$polaczenie->error;
+	?>
+			W celu rozpoczęcia czatu ze swoim tegorocznym mikołajem  <br>
+			oraz z osobą bądź osobami, którym robisz prezenty kliknij poniższy przycisk. <br>
+			<form method="post">
+				<input type="submit" style="width: 400px; height: 75px; font-size: 30px;" value="Przejdź do czatu"/>
+				<input type="hidden" value="wylosowana" name="losowanie"/>
+			</form>
+			</div>
+	<?php
+		}//jeżeli poprzednie pytania nie przeszły testu to znaczy że użytkownik wcisnął przycisk "PRZEJDZ DO CZATU"
+		else
+		{
+			if($_SESSION['czy_wszyscy_losowali']==true)
 			{
-				echo "blad";
+				header('Location: chat.php');
 			}
-		}
-		else
-		echo "Error: ".$polaczenie->error;
-?>
-		W celu rozpoczęcia czatu ze swoim tegorocznym mikołajem  <br>
-		oraz z osobą bądź osobami, którym robisz prezenty kliknij poniższy przycisk. <br>
-		<form method="post">
-			<input type="submit" style="width: 400px; height: 75px; font-size: 30px;" value="Przejdź do czatu"/>
-			<input type="hidden" value="wylosowana" name="losowanie"/>
-		</form>
-		</div>
-<?php
-	}//jeżeli poprzednie pytania nie przeszły testu to znaczy że użytkownik wcisnął przycisk "PRZEJDZ DO CZATU"
-	else
-	{
-		if($_SESSION['czy_wszyscy_losowali']==true)
-		{
-			header('Location: chat.php');
-		}
-		else
-		{
-			header('Location: waiting_room.php');
-		}
-		$polaczenie->close();
-	}	
-?>
+			else
+			{
+				header('Location: waiting_room.php');
+			}
+			$polaczenie->close();
+		}	
+	?>
 </body>
 </html>

@@ -1,5 +1,4 @@
 <?php
-
 	session_start();
 	
 	if (!isset($_SESSION['udanarejestracja']))
@@ -43,9 +42,7 @@
 		żeby zalogować się na swoje konto klikając poniższy link.</h1>
 		<a style="font-size: 40px" href="index.php">Zaloguj się na swoje konto!</a>
 	</div>
-	
-	
-	
+
 	<br /><br />
 
 </body>

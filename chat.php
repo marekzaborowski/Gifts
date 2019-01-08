@@ -134,7 +134,6 @@
             </form>
             <div class="czat">
                 <?php
-                //print_r($wiadomosci_zDzieckiem);
                     if(isset($wiadomosci_zDzieckiem))
                     {
                         wypisz_wiadomosci($wiadomosci_zDzieckiem, $komentarze);
